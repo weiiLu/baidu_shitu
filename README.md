@@ -38,4 +38,6 @@
 　  
 ## 步骤三：计算top1-error／top5-error　　 
 
-
+得到:  
+top1-error rate = 0.6419  
+top5-error rate = 0.4151  
