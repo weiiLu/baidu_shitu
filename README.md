@@ -41,3 +41,10 @@
 得到:  
 top1-error rate = 0.6419  
 top5-error rate = 0.4151  
+
+查看日志文件分析:  
+![ ](http://upload-images.jianshu.io/upload_images/8798237-4a350cdace56b04c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
+
+将识别失败的样本拿出:   
+![ ](http://upload-images.jianshu.io/upload_images/8798237-f7dc7e10c6344ab5.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+可以看到百度识图对于有些轻微遮挡(水印较多)以及花卉在图中占比较小时,无法准确识别.
