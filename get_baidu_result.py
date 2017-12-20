@@ -9,10 +9,11 @@ def getHtml(url,retries=3):
     """
     获取指定地址的html内容
     :url:网址
+     retries = 3 :超时重传3次
     """
 
     try:
-        #headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.12 Safari/535.11' }
+
         req = urllib2.Request(url)
         page = urllib2.urlopen(req,timeout = 60)
         html = page.read()
@@ -21,13 +22,7 @@ def getHtml(url,retries=3):
         if retries>0:
             print "retry the url!"
             return getHtml(url,retries-1)
-    # except urllib2.HTTPError as e:
-    #     print "获取html失败！失败原因如下：\n"
-    #     print e.code, e.reason
-    # req = urllib2.Request(url)
-    # page = urllib2.urlopen(req,timeout = 1000)
-    # html = page.read()
-    # return html
+
 
 def get_baidu_predict(url,num = 5):
     """
@@ -99,7 +94,7 @@ def get_ground_truth(txtfile):
     return dict_value
 
 dict_value = get_ground_truth('label_cid_word_530.txt')
-with open('urlList_label.txt','r') as f, open('baidu_pre.txt','w') as f2:
+with open('urlList_label_1.txt','r') as f, open('baidu_pre_1.txt','w') as f2:
     test_num = 0  #统计测试样本数目
     top_5_error_num = 0. #统计top-5识别错误数目
     top_1_error_num = 0. #统计top-1识别错误数目
@@ -121,12 +116,17 @@ with open('urlList_label.txt','r') as f, open('baidu_pre.txt','w') as f2:
             #识图成功
             pp = ''
             for val in pre:
-                # print chardet.detect(pre[0])
-                # print chardet.detect(dict_value[items[1]]),dict_value[items[1]].decode('utf-8')
+
                 if val == ground_truth:
                     sign = True
                 pp = val + ' '
-            pre_info = '第' + str(test_num)+'张->预测值:'+ pre[0].encode('utf-8') + '  ground_truth:' + ground_truth.encode('utf-8') + '\n'
+            pre_info = '第' + str(test_num)+'张->预测值:'+\
+                       pre[0].encode('utf-8') + ' ' +\
+                       pre[1].encode('utf-8')+' '+\
+                       pre[2].encode('utf-8')+' '+\
+                       pre[3].encode('utf-8')+' '+\
+                       pre[4].encode('utf-8')+ ' ground_truth:' + \
+                       ground_truth.encode('utf-8') + '  识图结果:'+str(sign)+'\n'
             if pre[0] != ground_truth:
                 top_1_error_num += 1
         elif tag == 1:
@@ -134,16 +134,17 @@ with open('urlList_label.txt','r') as f, open('baidu_pre.txt','w') as f2:
             break
         elif tag == 2:
             #识图成功，百度猜测
-            pre_info = '第' + str(test_num)+'张->预测值:'+ pre.encode('utf-8') + '  ground_truth:' + ground_truth.encode('utf-8') + '\n'
             if pre == dict_value[items[1]].decode('utf-8'):
                 sign = True
             else:
                 top_1_error_num += 1
+            pre_info = '第' + str(test_num)+'张->猜测值:'+ \
+            pre.encode('utf-8') + '  ground_truth:' + ground_truth.encode('utf-8') + '  识图结果:'+str(sign)+ '\n'
         else:
             #tag = 3 识图失败
             sign = False
             top_1_error_num += 1
-            pre_info  = '第' + str(test_num)+'张->识图失败:'+ '  ground_truth:' +ground_truth.encode('utf-8') + '\n'
+            pre_info  = '第' + str(test_num)+'张->识图失败!    '+ '  ground_truth:' +ground_truth.encode('utf-8') + '  识图结果:'+str(sign)+ '\n'
 
         if sign is False:
             top_5_error_num += 1
@@ -154,7 +155,7 @@ with open('urlList_label.txt','r') as f, open('baidu_pre.txt','w') as f2:
             if tag == 0:
                 print ("预测最有可能是{}，ground_truth：{},识图结果{}".format(pre[0].encode('utf-8'),dict_value[items[1]],sign))
             elif tag == 2:
-                print ("预测最有可能是{}，ground_truth：{},识图结果{}".format(pre.encode('utf-8'),dict_value[items[1]],sign))
+                print ("猜测最有可能是{}，ground_truth：{},识图结果{}".format(pre.encode('utf-8'),dict_value[items[1]],sign))
             else:
                 print 'index out of range'
         else:
